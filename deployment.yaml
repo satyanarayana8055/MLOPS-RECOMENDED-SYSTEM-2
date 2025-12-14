@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: ml-app-container
-        image: gcr.io/mlops-new-447207/ml-project:latest
+        image: gcr.io/disco-light-479913-j6/mlproject:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 5000  # Replace with the port your app listens on
+        - containerPort: 5000
 ---
 apiVersion: v1
 kind: Service
