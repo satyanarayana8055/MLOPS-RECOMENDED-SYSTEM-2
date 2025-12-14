@@ -20,6 +20,7 @@ pipeline {
         stage("Making a virtual environment") {
             steps {
                 sh '''
+                    set -e
                     python -m venv ${VENV_DIR}
                     . ${VENV_DIR}/bin/activate
                     pip install --upgrade pip
@@ -32,6 +33,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId:'gcp-key2', variable:'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     sh '''
+                        set -e
                         . ${VENV_DIR}/bin/activate
                         dvc pull
                     '''
@@ -43,6 +45,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId:'gcp-key2', variable:'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     sh '''
+                        set -e
                         export PATH=/usr/bin:$PATH
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud config set project ${GCP_PROJECT}
@@ -59,10 +62,13 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId:'gcp-key2', variable:'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     sh '''
+                        set -e
                         export PATH=/usr/bin:$PATH
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud config set project ${GCP_PROJECT}
                         gcloud container clusters get-credentials ml-app-cluster --region us-central1
+
+                        kubectl get nodes
                         kubectl apply -f deployment.yaml
                     '''
                 }
